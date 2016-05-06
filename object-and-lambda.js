@@ -13,7 +13,7 @@ const $ = do{
 	};
 	const isScope = target => typeof target === 'object' && target !== null || typeof target === 'function';
 	const new_scope = (old, new_match, value) => (...matches) =>
-		matches.length === 1 && matches[0] === new_match && new_match!==undefined
+		matches.length === 1 && matches[0] === new_match
 		? value
 		: init(old, ...matches);
 	const def = (...matches) => value => {
@@ -28,12 +28,14 @@ const $ = do{
 	def('def')(def);
 	match => do{
 		const $ = scope => (...matches) => do{
-			const value=init(scope, ...matches);
+			const value = init(scope, ...matches);
 			isScope(value)
 			? $(value)
 			: value;
 		};
-		$(top)(match);
+		match === undefined
+		? undefined
+		: $(top)(match);
 	};
 };
 
@@ -75,10 +77,10 @@ $('Math')('sqrt')(16);
 $('Math')('sqrt')(54397632289);
 //233233
 
-$('def')('Math', undefined)('T_T');
+$('def')(undefined)('T_T');
 //undefined
 
-$('Math')(undefined);
+$(undefined);
 //undefined
 
 $('def')('a')(x => x + 6);
