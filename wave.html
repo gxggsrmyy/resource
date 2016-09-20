@@ -68,7 +68,7 @@
 		})();
 		start();
 
-		addEventListener("scroll", event => void event.preventDefault());
+		addEventListener("scroll", () => void scrollTo(0, 0));
 		addEventListener("dragstart", event => void event.preventDefault());
 		addEventListener("contextmenu", event => void event.preventDefault());
 	</script>
