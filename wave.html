@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>示波器</title>
+	<style>
+		html, body{
+			height: 100%;
+			width: 100%;
+		}
+		html{
+			overflow: hidden;
+			background-color: black;
+		}
+		body{
+			top: 50%;
+			position: absolute;
+			margin: 0;
+		}
+		div{
+			--size: 5%;
+			width: var(--size);
+			height: var(--size);
+			transform: translateX(-50%) translateY(-50%);
+			position: absolute;
+			background-color: white;
+			border-radius: 100%;
+		}
+	</style>
+</head>
+
+<body>
+	<script>
+		"use strict";
+
+		let T = 1000 / 60;
+		let smooth = 270;
+		let x = t => t / T % 1;
+		let y = t => Math.sin(t * 2 * Math.PI / T / 0.999);
+		let color = t => Math.abs((t * 1e5) % (2 ** 25) - 2 ** 24);
+
+		const [start, stop] = (() => {
+			let process;
+			let t;
+			const body = document.body;
+			const new_div = document.createElement.bind(document, "div");
+			const update = now => {
+				process = requestAnimationFrame(update);
+				const step = T / smooth;
+				for(t = Math.max(t, now - T + step); t <= now; t += step){
+					const dot = body.appendChild(new_div());
+					const dot_style = dot.style;
+					dot_style.left = 100 * x(t) + "%";
+					dot_style.top = -50 * y(t) + "%";
+					const color_code = Math.floor(color(t)).toString(16);
+					dot_style.backgroundColor = "#" + "0".repeat(6 - color_code.length) + color_code;
+					setTimeout(() => body.removeChild(dot), t + T - now);
+				}
+			};
+			return [
+				() => {
+					cancelAnimationFrame(process);
+					update(t = performance.now());
+				},
+				() => void cancelAnimationFrame(process),
+			];
+		})();
+		start();
+
+		addEventListener("scroll", event => void event.preventDefault());
+		addEventListener("dragstart", event => void event.preventDefault());
+		addEventListener("contextmenu", event => void event.preventDefault());
+	</script>
+</body>
+
+</html>
