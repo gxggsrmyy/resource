@@ -58,7 +58,7 @@
 						dot_style.top = -50 * y(t) + "%";
 						const color_code = Math.round(color(t)).toString(16);
 						dot_style.backgroundColor = "#" + "0".repeat(6 - color_code.length) + color_code;
-						setTimeout(() => body.removeChild(dot), t + T - now);
+						setTimeout(() => setTimeout(() => body.removeChild(dot), 0), t + T - now);
 						body.appendChild(dot);
 					}catch(error){}
 				}
