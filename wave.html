@@ -50,13 +50,14 @@
 				const step = T / smooth;
 				for(t = Math.max(t, now - T + step); t <= now; t += step){
 					try{
-						const dot = body.appendChild(new_div());
+						const dot = new_div();
 						const dot_style = dot.style;
 						dot_style.left = 100 * x(t) + "%";
 						dot_style.top = -50 * y(t) + "%";
 						const color_code = Math.round(color(t)).toString(16);
 						dot_style.backgroundColor = "#" + "0".repeat(6 - color_code.length) + color_code;
 						setTimeout(() => body.removeChild(dot), t + T - now);
+						body.appendChild(dot);
 					}catch(error){}
 				}
 			};
