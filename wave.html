@@ -20,7 +20,7 @@
 			margin: 0;
 		}
 		div{
-			--size: 5%;
+			--size: 3%;
 			width: var(--size);
 			height: var(--size);
 			transform: translateX(-50%) translateY(-50%);
@@ -36,8 +36,8 @@
 	<script>
 		"use strict";
 
-		let T = 1000 / 60;
-		let smooth = 270;
+		let T = 1000 / 50;
+		let smooth = 580;
 		let x = t => 2 * (t / T % 1 - 0.5);
 		let y = t => Math.sin(t * 4 * Math.PI / T / 0.999);
 		let color = t => Math.abs((t / 1e3) % 2 - 1) * 0xffffff;
