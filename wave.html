@@ -38,7 +38,7 @@
 		let smooth = 270;
 		let x = t => t / T % 1;
 		let y = t => Math.sin(t * 2 * Math.PI / T / 0.999);
-		let color = t => Math.abs((t * 8e4) % 2 - 1) * 0xffffff;
+		let color = t => Math.abs((t * 1e7) % 2 - 1) * 0xffffff;
 
 		const [start, stop] = (() => {
 			let process;
