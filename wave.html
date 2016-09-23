@@ -37,7 +37,7 @@
 		"use strict";
 
 		let T = 1000 / 30;
-		let smooth = 13;
+		let smooth = 17;
 		let x = t => 2 * (t / T % 1 - 0.5);
 		let y = t => Math.sin(t * 4 * Math.PI / T / 0.999);
 		let color = t => Math.abs((t / 1e3) % 2 - 1) * 0xffffff;
@@ -59,8 +59,10 @@
 						dot_style.top = -50 * y(t) + "%";
 						const color_code = Math.round(color(t)).toString(16);
 						dot_style.backgroundColor = "#" + "0".repeat(6 - color_code.length) + color_code;
-						setTimeout(() => body.removeChild(dot), t + T - now);
-						body.appendChild(dot);
+						setTimeout(() => {
+							setTimeout(() => body.removeChild(dot), t + T - now);
+							body.appendChild(dot);
+						}, 0);
 					}catch(error){}
 				}
 			};
