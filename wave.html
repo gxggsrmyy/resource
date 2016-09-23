@@ -36,8 +36,8 @@
 	<script>
 		"use strict";
 
-		let T = 1000 / 50;
-		let smooth = 580;
+		let T = 1000 / 24;
+		let smooth = 13;
 		let x = t => 2 * (t / T % 1 - 0.5);
 		let y = t => Math.sin(t * 4 * Math.PI / T / 0.999);
 		let color = t => Math.abs((t / 1e3) % 2 - 1) * 0xffffff;
@@ -50,7 +50,7 @@
 			const new_div = document.createElement.bind(document, "div");
 			const update = now => {
 				timer = setTimeout(() => anim = requestAnimationFrame(update), 0);
-				const step = T / smooth;
+				const step = T / smooth ** 2;
 				for(t = Math.max(t, now - T + step); t <= now; t += step){
 					try{
 						const dot = new_div();
