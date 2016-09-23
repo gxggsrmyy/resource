@@ -24,7 +24,6 @@
 			height: var(--size);
 			transform: translateX(-50%) translateY(-50%);
 			position: absolute;
-			background-color: white;
 			border-radius: 100%;
 			left: 150%;
 			top: 150%;
@@ -43,12 +42,13 @@
 		let color = t => Math.abs((t / 1e3) % 2 - 1) * 0xffffff;
 
 		const [start, stop] = (() => {
-			let process;
+			let anim;
+			let timer;
 			let t;
 			const body = document.body;
 			const new_div = document.createElement.bind(document, "div");
 			const update = now => {
-				process = requestAnimationFrame(update);
+				timer = setTimeout(() => anim = requestAnimationFrame(update), 0);
 				const step = T / smooth;
 				for(t = Math.max(t, now - T + step); t <= now; t += step){
 					try{
@@ -65,10 +65,14 @@
 			};
 			return [
 				() => {
-					cancelAnimationFrame(process);
+					clearTimeout(timer);
+					cancelAnimationFrame(anim);
 					update(t = performance.now());
 				},
-				() => void cancelAnimationFrame(process),
+				() => {
+					clearTimeout(timer);
+					cancelAnimationFrame(anim);
+				}
 			];
 		})();
 		start();
