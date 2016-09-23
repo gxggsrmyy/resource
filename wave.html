@@ -36,7 +36,7 @@
 	<script>
 		"use strict";
 
-		let T = 1000 / 24;
+		let T = 1000 / 30;
 		let smooth = 13;
 		let x = t => 2 * (t / T % 1 - 0.5);
 		let y = t => Math.sin(t * 4 * Math.PI / T / 0.999);
@@ -49,7 +49,7 @@
 			const body = document.body;
 			const new_div = document.createElement.bind(document, "div");
 			const update = now => {
-				timer = setTimeout(() => update(performance.now()), 20);
+				timer = setTimeout(() => anim = requestAninimationFrame(update), 0);
 				const step = T / smooth ** 2;
 				for(t = Math.max(t, now - T + step); t <= now; t += step){
 					try{
