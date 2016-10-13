@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>音乐播放器</title>
+	<base target="frame">
+	<style>
+		html{
+			height: 100%;
+			overflow: hidden;
+		}
+		body{
+			margin: 0;
+			display: table;
+			width: 100%;
+			height: 100%;
+		}
+		div{
+			display: table-cell;
+			vertical-align: top;
+		}
+		dl{
+			width: 200px;
+			min-height: 100%;
+			max-height: 100%;
+			margin: 0;
+			padding: 8px;
+			overflow: auto;
+			resize: both;
+			word-wrap: break-word;
+			font: 1.1em "open sans", Arial, 平黑, 微软雅黑, sans-serif;
+			box-shadow: skyblue 0px 0px 50px;
+		}
+		dl dt:last-of-type{
+			font-size: 0.9em;
+		}
+		iframe{
+			border: none;
+			width: 100%;
+			height: 100%;
+		}
+	</style>
+</head>
+
+<body>
+	<div>
+		<dl>
+		<h2 align="center">音乐播放器</h2>
+<dt><a href='./lrc-player.html#["./src/take-me-to-your-heart.lrc","./src/take-me-to-your-heart.mp3"]'>Take Me to Your Heart</a></dt>
+<dt><a href='./lrc-player.html#["./src/Fools Garden - Lemon Tree.lrc","./src/Fools Garden - Lemon Tree.mp3"]'>Fools Garden-Lemon Tree</a></dt>
+<dt><a href='./lrc-player.html#["./src/M2M - The Day You Went Away.lrc","./src/M2M - The Day You Went Away.mp3"]'>M2M-The Day You Went Away</a></dt>
+<dt><a href='./lrc-player.html#["./src/Michael Jackson - Beat It.lrc","./src/Michael Jackson - Beat It.mp3"]'>Michael Jackson-Beat It</a></dt>
+<dt><a href='./lrc-player.html#["./src/Trouble Is A Friend-Lenka.lrc","./src/Trouble Is A Friend-Lenka.mp3"]'>Trouble Is A Friend-Lenka</a></dt>
+<dt><a href='./lrc-player.html#["./src/蔡琴 - 被遗忘的时光.lrc","./src/蔡琴 - 被遗忘的时光.mp3"]'>蔡琴-被遗忘的时光</a></dt>
+<dt><a href='./lrc-player.html#["./src/四个女生 - 心愿.lrc","./src/四个女生 - 心愿.mp3"]'>四个女生-心愿</a></dt>
+<dt><a href='./lrc-player.html#["./src/王菲 - 传奇.lrc","./src/王菲 - 传奇.mp3"]'>王菲-传奇</a></dt>
+<dt><a href='./lrc-player.html#["./src/张雨生 - 大海.lrc","./src/张雨生 - 大海.mp3"]'>张雨生-大海</a></dt>
+<dt><a href='./lrc-player.html#["./src/500-miles.lrc","./src/500-miles.mp3"]'>500-miles</a></dt>
+			<dt><a href='./lrc-player.html'>其它</a></dt>
+			<dt><br>制作人：<br>&nbsp;&nbsp;&nbsp;南京13中<br>&nbsp;&nbsp;&nbsp;高二(10)班<br>
+			&nbsp;&nbsp;&nbsp;豆成成<br><br></dt>
+			<dt>注: 音频来自网易云音乐</dt>
+			
+		</dl>
+	</div>
+	<div style="width: 100%">
+		<iframe name="frame"></iframe>
+	</div>
+	<script>
+		"use strict";
+
+		addEventListener("scroll", () => scrollTo(0, 0));
+
+		const update_title = () => {
+			setTimeout(() => requestAnimationFrame(update_title), 100);
+			document.title = document.getElementsByName("frame")[0].contentWindow.document.title || "音乐播放器";
+		};
+		update_title();
+	</script>
+</body>
+
+</html>
