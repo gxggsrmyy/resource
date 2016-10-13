@@ -3,6 +3,7 @@
 
 <head>
 	<meta charset="utf8">
+	<title>Loading</title>
 	<style>
 		html{
 			overflow: hidden;
@@ -12,15 +13,17 @@
 			text-align: center;
 			position: absolute;
 			top: 50%;
-			width: 100%;
+			left: 35px;
+			right: 35px;
 			font: 1.8em sans-serif;
 		}
 		#hr{
 			margin-top: -0.5px;
 			border-bottom: none;
 			border-color: black;
-			width: 100%;
-			position: absolute;
+			left: 0;
+			right: 0;
+			position: fixed;
 		}
 		#marquee{
 			background-color: white;
@@ -38,10 +41,11 @@
 
 <body>
 	<hr id="hr">
-	<audio src="http://yinyueshiting.baidu.com/data2/music/28919576/28919573190800320.mp3?xcode=17467d46fec0ffa496a2d3f13bf86a03" id="song"></audio>
-	<script type="text/plain" id="lrc">
+	<main></main>
+	<video src="./take-me-to-your-heart.mp3" id="song" hidden></video>
+	<script type="application/lrc" id="lrc">
 		[00:00.00]Take Me to Your Heart<br>吻别<br>Michael Learns To Rock «Take Me to Your Heart»<br>张学友《Lpcd45之等你等到我心痛》
-		[00:16.80]
+		[00:15.00]
 		[00:17.34]Hiding from the rain and snow.<br>前尘往事成云烟
 		[00:20.47]Trying to forget but I won't let go.<br>消散在彼此眼前
 		[00:25.07]Looking at a crowded street.<br>就连说过了再见
@@ -101,6 +105,7 @@
 		[03:43.59]Be my guiding star.<br>在狂乱的夜
 		[03:45.96]It's easy.<br>我的心
 		[03:47.77]Take me to your heart.<br>等着迎接伤悲
+		[03:52.17]
 	</script>
 	<script>
 		"use strict";
@@ -157,7 +162,8 @@
 		(timeline));
 
 		const marquee = (marquee => (marquee.appendChild(n$span[n$span.length - 1]), marquee))(new_element("span"));
-		document.body.appendChild(marquee).id = "marquee";
+		const main = $("main");
+		main.appendChild(marquee).id = "marquee";
 
 		const span$n = (map => span => map.get(span))(new Map(n$span.map((span, n) => [span, n])));
 
@@ -185,8 +191,8 @@
 
 
 		const song = $("#song");
-		const oncanplay = () => {
-			song.removeEventListener("canplay", oncanplay);
+		const oncanplaythrough = () => {
+			song.removeEventListener("canplaythrough", oncanplaythrough);
 
 			const duration = song.duration * 1e3;
 			timeline.push([duration]);
@@ -203,11 +209,11 @@
 					min = Math.floor(time / 6e4),
 					sec = Math.floor(time % 6e4 / 1e3)
 				) => min + ":" + (sec >= 10 ? "" : "0") + sec)
-				(duration - time)
+				(Math.min(duration, Math.max(0, duration - time)))
 			);
 			const set_offset = h => void (
 				offset = h,
-				marquee.style.top = -offset + "px"
+				main.style.transform = "translateY(" + -Math.floor(offset / 0.5) * 0.5 + "px)"
 			);
 			const update_time = time => void (
 				set_time(time),
@@ -237,12 +243,12 @@
 
 			let animation;
 			let is_playing = false;
+			const onplay = () => {
+				clearTimeout(animation);
+				animation = setTimeout(onplay, 70);
+				update_time(song.currentTime * 1e3);
+			};
 			song.addEventListener("play", () => {
-				const onplay = () => {
-					update_time(song.currentTime * 1e3);
-					clearTimeout(animation);
-					animation = setTimeout(onplay, 30);
-				};
 				is_playing = true;
 				onplay();
 			});
@@ -253,38 +259,43 @@
 			});
 
 			let status;
-			addEventListener("mousedown", event => {
-				if(event.button === 0){
-					status = [event.clientX, event.clientY, time, is_playing, offset + event.clientY, true];
-					song.pause();
-				}
-			});
-			addEventListener("mousemove", ({clientX, clientY}) => {
-				if(status){
-					let [x, y, time, is_playing, k, is_clicking] = status;
+			let timer;
+			let last_event;
+			const onmousemove = () => {
+				clearTimeout(timer);
+				timer = null;
+				if(last_event){
+					const {screenX, screenY} = last_event;
+					last_event = null;
+					if(status){
+						let [x, y, time, is_playing, yy, k, is_clicking] = status;
 
-					const offset = k - clientY;
-					if(offset < 0){
-						update_offset(0);
-						k = clientY;
-					}else{
-						const height = marquee.offsetHeight;
-						if(offset > height){
-							update_offset(height);
-							k = height + clientY;
-						}else{
-							update_offset(offset);
-						}
+						const _offset = offset + (yy - screenY) / devicePixelRatio;
+						update_offset(_offset < 0 ? 0 : Math.min(_offset, marquee.offsetHeight));
+						if(is_clicking && (screenX - x) ** 2 + (screenY - y) ** 2 > k) is_clicking = false;
+
+						status = [x, y, time, is_playing, screenY, k, is_clicking];
 					}
-
-					if(is_clicking && (clientX - x) ** 2 + (clientY - y) ** 2 > 14) is_clicking = false;
-
-					status = [x, y, time, is_playing, k, is_clicking];
+				}
+			};
+			addEventListener("mousedown", ({button, screenX, screenY}) => {
+				if(button === 0){
+					status = [screenX, screenY, time, is_playing, screenY, 13 * devicePixelRatio ** 2, true];
+					song.pause();
+					setTimeout(() => void update_time(status[2]), 0);
 				}
 			});
-			addEventListener("mouseup", event => {
-				if(status && event.button === 0){
-					const [x, y, time, is_playing, k, is_clicking] = status;
+			addEventListener("mousemove", event => {
+				last_event = event;
+				if(!timer){
+					onmousemove();
+					timer = setTimeout(onmousemove, 25);
+				}
+			});
+			addEventListener("mouseup", ({button}) => {
+				onmousemove();
+				if(status && button === 0){
+					const [x, y, time, is_playing, k, pr2, is_clicking] = status;
 					if(is_clicking){
 						update_time(time);
 						if(!is_playing) play();
@@ -296,12 +307,16 @@
 			});
 
 			addEventListener("resize", () => {
-				update_time(time);
+				if(is_playing){
+					onplay();
+				}else{
+					update_time(time);
+				}
 			});
 
 			play();
 		};
-		song.addEventListener("canplay", oncanplay);
+		song.addEventListener("canplaythrough", oncanplaythrough);
 
 
 
@@ -312,13 +327,15 @@
 			document.getSelection().removeAllRanges();
 		});
 		addEventListener("mousedown", event => {
-			if(event.button === 0) event.preventDefault();
+			if(event.button === 0){
+				event.target.focus();
+				event.preventDefault();
+			}
 		});
 		addEventListener("scroll", () => {
 			scrollTo(0, 0);
 		});
-</script>
-	
+	</script>
 </body>
 
 </html>
