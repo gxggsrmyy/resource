@@ -9,14 +9,6 @@
 
 		if(document.location.pathname.endsWith("/")) document.location.replace(document.location.href.slice(document.location.origin.length).match(/^(?:.*\/){2}(.*)$/)[1]);
 	</script>
-	<style>
-		button{
-			display: block;
-		}
-		span{
-			font-family: monospace;
-		}
-	</style>
 </head>
 
 <body>
@@ -29,15 +21,21 @@
 			addEventListener("pageshow", () => {
 				button.textContent = "View this directory";
 				button.disabled = false;
+				button.focus();
 			});
 			button.addEventListener("click", () => {
 				button.disabled = true;
-				button.textContent = "Redirecting";
+				button.textContent = "Jumping";
 				document.location = document.location.pathname.match(/^(?:.*\/){2}((?:.*\/)*)/)[1];
 			});
-			document.body.append(button);
+			document.body.append(document.createElement("hr"), button);
 		}
 	</script>
+	<style>
+		button{
+			display: block;
+		}
+	</style>
 </body>
 
 </html>
