@@ -29,7 +29,7 @@
 			button.append("View this directory");
 			button.addEventListener("click", () => {
 				button.disabled = true;
-				document.location = document.location.pathname.match(/^(?:.*\/){2}(.*\/)*/)[1]
+				document.location = document.location.pathname.match(/^(?:.*\/){2}((?:.*\/)*)/)[1]
 			});
 			document.body.append(button);
 		}
