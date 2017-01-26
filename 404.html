@@ -26,10 +26,14 @@
 
 		{
 			const button = document.createElement("button");
-			button.append("View this directory");
+			addEventListener("pageshow", () => {
+				button.textContent = "View this directory";
+				button.disabled = false;
+			});
 			button.addEventListener("click", () => {
 				button.disabled = true;
-				document.location = document.location.pathname.match(/^(?:.*\/){2}((?:.*\/)*)/)[1]
+				button.textContent = "Redirecting";
+				document.location = document.location.pathname.match(/^(?:.*\/){2}((?:.*\/)*)/)[1];
 			});
 			document.body.append(button);
 		}
